@@ -6,7 +6,7 @@ This is code repo for paper "DUMP: Automated Distribution-Level Curriculum Learn
 
 Recent advances in reinforcement learning (RL)-based post-training have led to notable improvements in large language models (LLMs), particularly in enhancing their reasoning capabilities. However, most existing methods treat the training data as a unified whole, overlooking the fact that modern LLM training often involves a mixture of data from diverse distributions—varying in both source and difficulty.
 
-This project presents **DUMP**, a principled curriculum learning framework grounded in the notion of distribution-level learnability. Our core insight is that the magnitude of policy advantages reflects how much a model can still benefit from further training on a given distribution. Based on this, we propose:
+This project presents **DUMP**, a principled automated curriculum learning framework grounded in the notion of distribution-level learnability. Our core insight is that the magnitude of policy advantages reflects how much a model can still benefit from further training on a given distribution. Based on this, we propose:
 
 - A distribution-level curriculum learning framework for RL-based LLM post-training
 - An approach leveraging the Upper Confidence Bound (UCB) principle to dynamically adjust sampling probabilities for different distributions
@@ -116,7 +116,99 @@ The project uses K&K puzzles of varying complexity (from 3 to 14 people) to trai
 - **Training Strategy**: Two variants are available:
   - With curriculum learning (`combinedkk.sh`) - Custom implementation focus of this project
   - Without curriculum learning (`combinedkk_nocl.sh`) - For comparative evaluation
-- **Hardware Requirements**: 8 GPUs per node
+- **Hardware Requirements**: 8 GPUs per node (recommended)
+
+## Training Scripts
+
+The project includes two primary training scripts:
+
+### With Curriculum Learning
+```bash
+./main_grpo_Qwen2.5-7B-Instruct-1M_combined_logic_longseq_combinedkk.sh
+```
+
+### Without Curriculum Learning
+```bash
+./main_grpo_Qwen2.5-7B-Instruct-1M_combined_logic_longseq_combinedkk_nocl.sh
+```
+
+**Important**: Before running these scripts, remember to modify the `trainer.hf_account` parameter in the scripts from `xxx` to your own Hugging Face username to enable model uploading.
+
+## Dataset Generation Process (Optional)
+
+
+The dataset generation process is optional, you can directly use our generated data located in ./combined_logic_dataset/generate_combined_kk. The dataset generation process consists of the following steps:
+
+1. **Generate K&K puzzles**:
+   ```bash
+   python kk/data_prep/data_gen_kk.py
+   ```
+   This generates various Knights and Knaves puzzles in JSONL format.
+
+2. **Move generated files to combined_logic_dataset**:
+   ```bash
+   # Move all generated JSONL files to the appropriate directory
+   mv data/*/clean/*.jsonl combined_logic_dataset/kk/
+   ```
+
+3. **Generate combined dataset**:
+   ```bash
+   # Run the dataset combiner in background
+   nohup python ./combined_logic_dataset/generate_combined_kk.py --local_dir ./combined_logic_dataset/generate_combined_kk > generate_combined_kk.log 2>&1 &
+   ```
+   This processes the JSONL files into parquet files with carefully formatted prompts suitable for instruction-tuned models.
+
+## Project Structure
+
+```
+├── verl/                  # Reinforcement learning framework (external dependency with modifications)
+│   ├── trainer/           # RL training implementation
+│   └── ...
+├── kk/                    # Knights and Knaves utilities
+│   ├── data_prep/         # Data preparation utilities
+│   │   └── data_gen_kk.py # Main data generation script used in this project
+│   └── ...                # Other utilities (not directly used)
+├── combined_logic_dataset/  # Combined dataset generation
+│   ├── kk/                # Location for generated KK dataset files
+│   ├── generate_combined_kk/ # Output directory for processed datasets
+│   └── generate_combined_kk.py # Dataset combination script
+└── main_grpo_*.sh         # Training scripts
+```
+
+## Usage
+
+1. **Generate K&K dataset (Optional)**:
+   ```bash
+   python ./kk/data_prep/data_gen_kk.py
+   ```
+
+2. **Move generated files (Optional)**:
+   ```bash
+   mv data/train/clean/*.jsonl combined_logic_dataset/kk/
+   ```
+
+3. **Generate combined dataset (Optional)**:
+   ```bash
+   nohup python ./combined_logic_dataset/generate_combined_kk.py --local_dir ./combined_logic_dataset/generate_combined_kk > generate_combined_kk.log 2>&1 &
+   ```
+
+4. **Running experiments**:
+
+    - Before running the training scripts, make sure to modify the `trainer.hf_account=xxx` parameter in the `.sh` files to your own Hugging Face username.
+    - The training requires significant GPU resources (8x A100/H100 GPUs recommended).
+    - Dataset generation is optional as pre-processed data is already available in `./combined_logic_dataset/generate_combined_kk/`.
+    - Ensure you've logged into both Weights & Biases and Hugging Face before starting training to enable experiment tracking and model uploading.
+
+    *Start training with DUMP curriculum learning*:
+
+   ```bash
+   ./main_grpo_Qwen2.5-7B-Instruct-1M_combined_logic_longseq_combinedkk.sh
+   ```
+
+    *Start training without DUMP curriculum learning (for comparison)*:
+   ```bash
+   ./main_grpo_Qwen2.5-7B-Instruct-1M_combined_logic_longseq_combinedkk_nocl.sh
+   ```
 
 ## Primary Contribution: Curriculum Learning
 
@@ -240,97 +332,6 @@ class CurriculumSampler:
 
 This implementation realizes the theoretical framework proposed in our paper, creating a principled approach to curriculum learning that adapts to the model's changing capabilities during training.
 
-## Training Scripts
-
-The project includes two primary training scripts:
-
-### With Curriculum Learning
-```bash
-./main_grpo_Qwen2.5-7B-Instruct-1M_combined_logic_longseq_combinedkk.sh
-```
-
-### Without Curriculum Learning
-```bash
-./main_grpo_Qwen2.5-7B-Instruct-1M_combined_logic_longseq_combinedkk_nocl.sh
-```
-
-**Important**: Before running these scripts, remember to modify the `trainer.hf_account` parameter in the scripts from `xxx` to your own Hugging Face username to enable model uploading.
-
-## Dataset Generation Process (Optional)
-
-
-The dataset generation process is optional, you can directly use our generated data located in ./combined_logic_dataset/generate_combined_kk. The dataset generation process consists of the following steps:
-
-1. **Generate K&K puzzles**:
-   ```bash
-   python kk/data_prep/data_gen_kk.py
-   ```
-   This generates various Knights and Knaves puzzles in JSONL format.
-
-2. **Move generated files to combined_logic_dataset**:
-   ```bash
-   # Move all generated JSONL files to the appropriate directory
-   mv data/*/clean/*.jsonl combined_logic_dataset/kk/
-   ```
-
-3. **Generate combined dataset**:
-   ```bash
-   # Run the dataset combiner in background
-   nohup python ./combined_logic_dataset/generate_combined_kk.py --local_dir ./combined_logic_dataset/generate_combined_kk > generate_combined_kk.log 2>&1 &
-   ```
-   This processes the JSONL files into parquet files with carefully formatted prompts suitable for instruction-tuned models.
-
-## Project Structure
-
-```
-├── verl/                  # Reinforcement learning framework (external dependency with modifications)
-│   ├── trainer/           # RL training implementation
-│   └── ...
-├── kk/                    # Knights and Knaves utilities
-│   ├── data_prep/         # Data preparation utilities
-│   │   └── data_gen_kk.py # Main data generation script used in this project
-│   └── ...                # Other utilities (not directly used)
-├── combined_logic_dataset/  # Combined dataset generation
-│   ├── kk/                # Location for generated KK dataset files
-│   ├── generate_combined_kk/ # Output directory for processed datasets
-│   └── generate_combined_kk.py # Dataset combination script
-└── main_grpo_*.sh         # Training scripts
-```
-
-## Usage
-
-1. **Generate K&K dataset (Optional)**:
-   ```bash
-   python ./kk/data_prep/data_gen_kk.py
-   ```
-
-2. **Move generated files (Optional)**:
-   ```bash
-   mv data/train/clean/*.jsonl combined_logic_dataset/kk/
-   ```
-
-3. **Generate combined dataset (Optional)**:
-   ```bash
-   nohup python ./combined_logic_dataset/generate_combined_kk.py --local_dir ./combined_logic_dataset/generate_combined_kk > generate_combined_kk.log 2>&1 &
-   ```
-
-4. **Running experiments**:
-
-    - Before running the training scripts, make sure to modify the `trainer.hf_account=xxx` parameter in the `.sh` files to your own Hugging Face username.
-    - The training requires significant GPU resources (8x A100/H100 GPUs recommended).
-    - Dataset generation is optional as pre-processed data is already available in `./combined_logic_dataset/generate_combined_kk/`.
-    - Ensure you've logged into both Weights & Biases and Hugging Face before starting training to enable experiment tracking and model uploading.
-
-    *Start training with DUMP curriculum learning*:
-
-   ```bash
-   ./main_grpo_Qwen2.5-7B-Instruct-1M_combined_logic_longseq_combinedkk.sh
-   ```
-
-    *Start training without DUMP curriculum learning (for comparison)*:
-   ```bash
-   ./main_grpo_Qwen2.5-7B-Instruct-1M_combined_logic_longseq_combinedkk_nocl.sh
-   ```
 ## Acknowledgement
 https://github.com/volcengine/verl
 
