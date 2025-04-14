@@ -56,14 +56,14 @@ python3 -m verl.trainer.main_ppo \
     trainer.critic_warmup=0 \
     trainer.logger=['wandb'] \
     trainer.project_name='GRPO_combined_logic' \
-    trainer.experiment_name='Qwen2.5-7B-Instruct-1M_combined_logic_longseq_balance400_combinedkk' \
+    trainer.experiment_name='Qwen2.5-7B-Instruct-1M_combinedkk_dump' \
     trainer.n_gpus_per_node=8 \
     trainer.nnodes=1 \
-    trainer.default_local_dir=./local_save_dir/GRPO_combined_logic_Qwen2.5-7B-Instruct-1M_longseq_balance400_combinedkk \
+    trainer.default_local_dir=./local_save_dir/GRPO_Qwen2.5-7B-Instruct-1M_combinedkk_dump \
     trainer.default_hdfs_dir=null \
     trainer.remove_previous_ckpt_in_save=True \
     trainer.hf_account=xxx \
     trainer.cleanup_after_upload=True \
     trainer.save_freq=100 \
     trainer.test_freq=10 \
-    trainer.total_epochs=2 $@ 2>&1 | tee standardtraining_GRPO_combined_logic_Qwen2.5-7B-Instruct-1M_longseqcombined_logic_dataset_v0_balance400_combinedkk.log
+    trainer.total_epochs=2 $@ 2>&1 | tee standardtraining_GRPO_Qwen2.5-7B-Instruct-1M_combinedkk_dump.log
