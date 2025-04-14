@@ -34,8 +34,8 @@ Follow these steps to set up the environment:
 
 ```bash
 # Create and activate conda environment
-conda create -n logic python=3.9
-conda activate logic
+conda create -n dump python=3.9
+conda activate dump
 
 # Clone the repository
 git clone https://github.com/ZhentingWang/DUMP.git
