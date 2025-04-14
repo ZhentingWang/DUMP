@@ -124,11 +124,13 @@ The project includes two primary training scripts:
 
 ### With DUMP Curriculum Learning
 ```bash
+conda activate dump
 ./main_grpo_Qwen2.5-7B-Instruct-1M_combined_logic_longseq_combinedkk.sh
 ```
 
 ### Without DUMP Curriculum Learning
 ```bash
+conda activate dump
 ./main_grpo_Qwen2.5-7B-Instruct-1M_combined_logic_longseq_combinedkk_nocl.sh
 ```
 
@@ -141,6 +143,10 @@ The dataset generation process is optional, you can directly use our generated d
 
 1. **Generate K&K puzzles**:
    ```bash
+   cd kk
+   conda env create -f environment.yml
+   conda activate kk
+   cd ..
    python kk/data_prep/data_gen_kk.py
    ```
    This generates various Knights and Knaves puzzles in JSONL format.
@@ -154,6 +160,7 @@ The dataset generation process is optional, you can directly use our generated d
 3. **Generate combined dataset**:
    ```bash
    # Run the dataset combiner in background
+   conda activate dump
    nohup python ./combined_logic_dataset/generate_combined_kk.py --local_dir ./combined_logic_dataset/generate_combined_kk > generate_combined_kk.log 2>&1 &
    ```
    This processes the JSONL files into parquet files with carefully formatted prompts suitable for instruction-tuned models.
@@ -179,6 +186,10 @@ The dataset generation process is optional, you can directly use our generated d
 
 1. **Generate K&K dataset (Optional)**:
    ```bash
+   cd kk
+   conda env create -f environment.yml
+   conda activate kk
+   cd ..
    python ./kk/data_prep/data_gen_kk.py
    ```
 
@@ -189,6 +200,7 @@ The dataset generation process is optional, you can directly use our generated d
 
 3. **Generate combined dataset (Optional)**:
    ```bash
+   conda activate dump
    nohup python ./combined_logic_dataset/generate_combined_kk.py --local_dir ./combined_logic_dataset/generate_combined_kk > generate_combined_kk.log 2>&1 &
    ```
 
@@ -202,11 +214,13 @@ The dataset generation process is optional, you can directly use our generated d
     *Start training with DUMP curriculum learning*:
 
    ```bash
+   conda activate dump
    ./main_grpo_Qwen2.5-7B-Instruct-1M_combined_logic_longseq_combinedkk.sh
    ```
 
     *Start training without DUMP curriculum learning (for comparison)*:
    ```bash
+   conda activate dump
    ./main_grpo_Qwen2.5-7B-Instruct-1M_combined_logic_longseq_combinedkk_nocl.sh
    ```
 
