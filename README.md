@@ -20,7 +20,7 @@ The project builds upon and integrates several existing components:
 
 1. **verl** - An existing framework for implementing reinforcement learning training pipelines, with custom curriculum learning modifications
 2. **kk/data_gen_kk.py** - Script used for generating Knights and Knaves logic puzzles datasets
-3. **combined_logic_dataset** - Custom tools for combining multiple logical reasoning datasets
+3. **combined_logic_dataset** - Custom tools for combining multiple datasets
 
 ## Requirements
 
