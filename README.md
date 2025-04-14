@@ -122,12 +122,12 @@ The project uses K&K puzzles of varying complexity (from 3 to 14 people) to trai
 
 The project includes two primary training scripts:
 
-### With Curriculum Learning
+### With DUMP Curriculum Learning
 ```bash
 ./main_grpo_Qwen2.5-7B-Instruct-1M_combined_logic_longseq_combinedkk.sh
 ```
 
-### Without Curriculum Learning
+### Without DUMP Curriculum Learning
 ```bash
 ./main_grpo_Qwen2.5-7B-Instruct-1M_combined_logic_longseq_combinedkk_nocl.sh
 ```
