@@ -2,17 +2,16 @@
 
 This is code repo for paper "DUMP: Automated Distribution-Level Curriculum Learning for RL-based LLM Post-training"
 
-## Project Overview
+## 🔥 What is DUMP?
 
-Recent advances in reinforcement learning (RL)-based post-training have led to notable improvements in large language models (LLMs), particularly in enhancing their reasoning capabilities. However, most existing methods treat the training data as a unified whole, overlooking the fact that modern LLM training often involves a mixture of data from diverse distributions—varying in both source and difficulty.
+**DUMP** is a plug-and-play curriculum learning module for RL-based LLM post-training.  
+It automatically prioritizes data distributions that are most beneficial for learning—  
+based on live advantage signals from your model—and schedules them using a bandit-based UCB strategy.
 
-This project presents **DUMP**, a principled automated curriculum learning framework grounded in the notion of distribution-level learnability. Our core insight is that the magnitude of policy advantages reflects how much a model can still benefit from further training on a given distribution. Based on this, we propose:
-
-- A distribution-level curriculum learning framework for RL-based LLM post-training
-- An approach leveraging the Upper Confidence Bound (UCB) principle to dynamically adjust sampling probabilities for different distributions
-- A method that prioritizes distributions with either high average advantage (exploitation) or low sample count (exploration)
-
-We instantiate our curriculum learning framework with GRPO (Generalized Reward Proximal Optimization) as the underlying RL algorithm and demonstrate its effectiveness on logic reasoning datasets with multiple difficulties and sources. Our experiments show that our framework significantly improves convergence speed and final performance, highlighting the value of distribution-aware curriculum strategies in LLM post-training.
+🧠 If you're training LLMs with PPO / GRPO / RLHF on a mixture of training data from diverse distributions and difficulties, DUMP will:
+- Improve convergence speed
+- Boost performance on hard distributions
+- Reduce wasted training on saturated samples
 
 ## Key Components
 
