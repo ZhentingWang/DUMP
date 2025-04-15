@@ -13,7 +13,7 @@ based on live advantage signals from your model—and schedules them using a ban
 - Boost performance on hard distributions
 - Reduce wasted training on saturated samples
 
-## Key Components
+## 🧩 Key Components
 
 The project builds upon and integrates several existing components:
 
@@ -21,13 +21,13 @@ The project builds upon and integrates several existing components:
 2. **kk/data_gen_kk.py** - Script used for generating Knights and Knaves logic puzzles datasets
 3. **combined_logic_dataset** - Custom tools for combining multiple datasets
 
-## Requirements
+## ⚙️ Requirements
 
 - Python 3.9
 - CUDA support
 - 8 A100/H100 GPUs for training (Recommended) [todo: provide scripts for training on fewer GPUs.]
 
-## Installation
+## 🛠️ Installation
 
 Follow these steps to set up the environment:
 
@@ -58,7 +58,7 @@ pip install tensordict==0.5.0
 pip install scipy
 ```
 
-## Service Authentication
+## 🔐 Service Authentication
 
 Before using the project, you need to authenticate with Weights & Biases (for experiment tracking) and Hugging Face (for model uploading):
 
@@ -109,7 +109,7 @@ Knights and Knaves puzzles are classic logical reasoning problems where:
 
 The project uses K&K puzzles of varying complexity (from 3 to 14 people) to train and evaluate LLMs' logical reasoning capabilities.
 
-## Training Details
+## 🎯 Training Details
 
 - **Base Model**: Qwen2.5-7B-Instruct-1M
 - **Sequence Length**: Long sequence training with up to 20K token responses
@@ -118,7 +118,7 @@ The project uses K&K puzzles of varying complexity (from 3 to 14 people) to trai
   - Without curriculum learning (`combinedkk_nocl.sh`) - For comparative evaluation
 - **Hardware Requirements**: 8 GPUs per node (Recommended. For the training on fewer GPUs, you can adjust the parameters in .sh files.)
 
-## Training Scripts
+## 🧪 Training Scripts
 
 The project includes two primary training scripts:
 
@@ -136,7 +136,7 @@ conda activate dump
 
 **Important**: Before running these scripts, remember to modify the `trainer.hf_account` parameter in the scripts from `xxx` to your own Hugging Face username to enable model uploading.
 
-## Dataset Generation Process (Optional)
+## 📘 Dataset Generation Process (Optional)
 
 
 The dataset generation process is optional, you can directly use our generated data located in ./combined_logic_dataset/generate_combined_kk. The dataset generation process consists of the following steps:
@@ -165,7 +165,7 @@ The dataset generation process is optional, you can directly use our generated d
    ```
    This processes the JSONL files into parquet files with carefully formatted prompts suitable for instruction-tuned models.
 
-## Project Structure
+## 🗂️ Project Structure
 
 ```
 ├── verl/                  # Reinforcement learning framework (external dependency with modifications)
@@ -236,7 +236,7 @@ The main contribution of this project is the implementation of curriculum learni
 - Using the `data_source_key` parameter to identify different data sources
 - Dynamically adjusting the learning process based on model performance
 
-## Curriculum Learning Implementation
+## 🛠️ Curriculum Learning Implementation
 
 Our implementation in `verl/utils/curriculum_learning.py` provides a robust framework for distribution-level curriculum learning in RL-based LLM training. The system dynamically adjusts sampling probabilities to focus on distributions with the highest learning potential.
 
@@ -349,7 +349,7 @@ class CurriculumSampler:
 
 This implementation realizes the theoretical framework proposed in our paper, creating a principled approach to curriculum learning that adapts to the model's changing capabilities during training.
 
-## Acknowledgement
+## 🙏 Acknowledgement
 https://github.com/volcengine/verl
 
 https://github.com/AlphaPav/mem-kk-logic
