@@ -1,8 +1,5 @@
 # DUMP
 
-```markdown
-[![arXiv](https://img.shields.io/badge/arXiv-2404.xxxxx-b31b1b.svg)](https://arxiv.org/abs/2404.xxxxx)
-
 This is code repo for paper "DUMP: Automated Distribution-Level Curriculum Learning for RL-based LLM Post-training"
 
 ## 🔥 What is DUMP?
