@@ -18,8 +18,8 @@ Effectiveness of DUMP on the K&K puzzle dataset mixed with 12 distributions defi
  dataset compared to baseline:
 
 <p align="center">
-<img src="./images/effectiveness1.png" alt="DUMP Effectiveness1" width="65%"/>
-<img src="./images/effectiveness2.png" alt="DUMP Effectiveness2" width="65%"/>
+<img src="./images/effectiveness1.png" alt="DUMP Effectiveness1" width="70%"/>
+<img src="./images/effectiveness2.png" alt="DUMP Effectiveness2" width="70%"/>
 
 </p>
 
