@@ -25,7 +25,7 @@ The project builds upon and integrates several existing components:
 
 - Python 3.9
 - CUDA support
-- 8 A100/H100 GPUs for training (recommended)
+- 8 A100/H100 GPUs for training (Recommended) [todo: provide scripts for training on fewer GPUs.]
 
 ## Installation
 
@@ -112,11 +112,11 @@ The project uses K&K puzzles of varying complexity (from 3 to 14 people) to trai
 ## Training Details
 
 - **Base Model**: Qwen2.5-7B-Instruct-1M
-- **Sequence Length**: Long sequence training with 4K token prompts and up to 20K token responses
+- **Sequence Length**: Long sequence training with up to 20K token responses
 - **Training Strategy**: Two variants are available:
   - With curriculum learning (`combinedkk.sh`) - Custom implementation focus of this project
   - Without curriculum learning (`combinedkk_nocl.sh`) - For comparative evaluation
-- **Hardware Requirements**: 8 GPUs per node (recommended)
+- **Hardware Requirements**: 8 GPUs per node (Recommended. For the training on fewer GPUs, you can adjust the parameters in .sh files.)
 
 ## Training Scripts
 
