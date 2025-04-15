@@ -1,6 +1,9 @@
 # DUMP
 
-This is code repo for paper "DUMP: Automated Distribution-Level Curriculum Learning for RL-based LLM Post-training"
+<a href='https://arxiv.org/abs/2504.09710'><img src='https://img.shields.io/badge/arXiv-2502.14768-b31b1b.svg'></a> &nbsp;
+
+
+This is code repo for paper [DUMP: Automated Distribution-Level Curriculum Learning for RL-based LLM Post-training](https://arxiv.org/pdf/2504.09710)
 
 ## 🔥 What is DUMP?
 
