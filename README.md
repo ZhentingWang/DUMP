@@ -1,5 +1,8 @@
 # DUMP
 
+```markdown
+[![arXiv](https://img.shields.io/badge/arXiv-2404.xxxxx-b31b1b.svg)](https://arxiv.org/abs/2404.xxxxx)
+
 This is code repo for paper "DUMP: Automated Distribution-Level Curriculum Learning for RL-based LLM Post-training"
 
 ## 🔥 What is DUMP?
@@ -13,9 +16,12 @@ based on live advantage signals from your model—and schedules them using a ban
 - Boost performance on hard distributions
 - Reduce wasted training on saturated samples
 
-Effectiveness of DUMP on the K&K puzzle dataset mixed with 12 distributions defined by
+📈 Effectiveness of DUMP on the K&K puzzle dataset mixed with 12 distributions defined by
  the number of characters in each puzzle. DUMP consistently achieves higher answer reward on test
  dataset compared to baseline:
+
+ - Red: RL with DUMP curriculum; Green: RL without curriculum  
+ - Each subplot shows a different logic puzzle difficulty (3–14 characters)
 
 <p align="center">
 <img src="./images/effectiveness1.png" alt="DUMP Effectiveness1" width="70%"/>
@@ -366,3 +372,15 @@ https://github.com/volcengine/verl
 https://github.com/AlphaPav/mem-kk-logic
 
 https://github.com/Unakar/Logic-RL
+
+## 📚 Citation
+
+If you find this project useful, please consider citing our paper:
+
+```bibtex
+@article{wang2025dump,
+  title={DUMP: Automated Distribution-Level Curriculum Learning for RL-based LLM Post-training},
+  author={Wang, Zhenting and Cui, Guofeng and Wan, Kun and Zhao, Wentian},
+  journal={arXiv preprint arXiv:2404.xxxxx},
+  year={2025}
+}
