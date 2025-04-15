@@ -378,6 +378,6 @@ If you find this project useful, please consider citing our paper:
 @article{wang2025dump,
   title={DUMP: Automated Distribution-Level Curriculum Learning for RL-based LLM Post-training},
   author={Wang, Zhenting and Cui, Guofeng and Wan, Kun and Zhao, Wentian},
-  journal={arXiv preprint arXiv:2404.xxxxx},
+  journal={arXiv preprint arXiv:2504.xxxxx},
   year={2025}
 }
