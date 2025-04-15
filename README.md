@@ -13,10 +13,11 @@ based on live advantage signals from your model—and schedules them using a ban
 - Boost performance on hard distributions
 - Reduce wasted training on saturated samples
 
-
-![ Effectiveness of DUMP on the K&K puzzle dataset mixed with 12 distributions defined by
+Effectiveness of DUMP on the K&K puzzle dataset mixed with 12 distributions defined by
  the number of characters in each puzzle. DUMP consistently achieves higher answer reward on test
- dataset compared to baseline.](./effectiveness.png)
+ dataset compared to baseline.
+
+<img src="./effectiveness.png" alt="DUMP Effectiveness" width="70%"/>
 
 
 ## 🧩 Key Components
