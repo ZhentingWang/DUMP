@@ -182,7 +182,10 @@ The dataset generation process is optional, you can directly use our generated d
 └── main_grpo_*.sh         # Training scripts
 ```
 
-## Usage
+## 🚀 Quick Start
+
+0. **Environment Preparation**:
+   Refer to Installation and Service Authentication.
 
 1. **Generate K&K dataset (Optional)**:
    ```bash
