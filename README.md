@@ -15,9 +15,11 @@ based on live advantage signals from your model—and schedules them using a ban
 
 Effectiveness of DUMP on the K&K puzzle dataset mixed with 12 distributions defined by
  the number of characters in each puzzle. DUMP consistently achieves higher answer reward on test
- dataset compared to baseline.
+ dataset compared to baseline:
 
-<img src="./effectiveness.png" alt="DUMP Effectiveness" width="70%"/>
+<p align="center">
+<img src="./effectiveness.png" alt="DUMP Effectiveness" width="60%"/>
+</p>
 
 
 ## 🧩 Key Components
