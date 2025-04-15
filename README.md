@@ -56,6 +56,7 @@ pip install -e .  # For verl integration
 # Install additional tools
 pip install wandb IPython matplotlib
 pip install tensordict==0.5.0
+pip install scipy
 ```
 
 ## Service Authentication
