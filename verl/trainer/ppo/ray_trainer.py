@@ -776,9 +776,7 @@ class RayPPOTrainer(object):
         # Log curriculum information if curriculum learning is enabled
         enable_curriculum_learning = hasattr(self, 'curriculum_sampler') and self.curriculum_sampler is not None
         if enable_curriculum_learning:
-            # Don't update weights based on validation results - only log metrics
-            # Curriculum weights should only be updated during training to prevent data leakage
-            
+
             # Get the current weights for logging
             current_weights = self.curriculum_sampler.get_source_stats()
             
