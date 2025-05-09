@@ -773,26 +773,13 @@ class RayPPOTrainer(object):
                 for data_source, extra_info_lst in extra_info_dict.items():
                     metric_dict[f'val/test_score_extra/{data_source}/{key}'] = np.mean(extra_info_lst)
         
-        # Update curriculum weights if curriculum learning is enabled
+        # Log curriculum information if curriculum learning is enabled
         enable_curriculum_learning = hasattr(self, 'curriculum_sampler') and self.curriculum_sampler is not None
-        if enable_curriculum_learning and data_source_rewards and data_source_advantages:
-            print("Updating curriculum weights based on validation results")
+        if enable_curriculum_learning:
+            # Don't update weights based on validation results - only log metrics
+            # Curriculum weights should only be updated during training to prevent data leakage
             
-            # Update the curriculum sampler with rewards and advantages
-            for source, rewards in data_source_rewards.items():
-                advantages = data_source_advantages.get(source, [0.0])  # Default if missing
-                
-                # Calculate average reward and advantage for this source
-                avg_reward = np.mean(rewards)
-                avg_advantage = np.mean(advantages)
-                
-                # Update curriculum sampler with this data
-                self.curriculum_sampler.update_weights(
-                        source_rewards={source: [avg_reward]}, 
-                        source_advantages={source: [avg_advantage]}
-                    )
-
-            # After updating, get the current weights for logging
+            # Get the current weights for logging
             current_weights = self.curriculum_sampler.get_source_stats()
             
             # Add curriculum learning stats to metrics
@@ -922,6 +909,16 @@ class RayPPOTrainer(object):
         import dill
         torch.save(self.train_dataloader, dataloader_local_path, pickle_module=dill)
 
+        # save curriculum learning state if available
+        if hasattr(self, 'curriculum_sampler') and self.curriculum_sampler is not None:
+            curriculum_state_local_path = os.path.join(local_global_step_folder, 'curriculum_state.pt')
+            try:
+                curriculum_state = self.curriculum_sampler.get_state()
+                torch.save(curriculum_state, curriculum_state_local_path)
+                print(f"Saved curriculum learning state to {curriculum_state_local_path}")
+            except Exception as e:
+                print(f"Failed to save curriculum learning state: {e}")
+
         # latest checkpointed iteration tracker (for atomic usage)
         local_latest_checkpointed_iteration = os.path.join(self.config.trainer.default_local_dir,
                                                            'latest_checkpointed_iteration.txt')
@@ -949,6 +946,20 @@ class RayPPOTrainer(object):
                 hf_repo_id = f"{self.config.trainer.hf_account}/{self.config.trainer.experiment_name}_global_step_{self.global_steps}"
             
             print(f"Starting model merge and HF upload for step {self.global_steps} to {hf_repo_id}")
+            
+            # Copy curriculum state to actor folder for inclusion in the upload
+            if hasattr(self, 'curriculum_sampler') and self.curriculum_sampler is not None:
+                curriculum_state_path = os.path.join(self.config.trainer.default_local_dir, 
+                                                   f"global_step_{self.global_steps}/curriculum_state.pt")
+                if os.path.exists(curriculum_state_path):
+                    try:
+                        import shutil
+                        # Copy to the actor directory so it will be included in the upload
+                        target_path = os.path.join(checkpoint_dir, "./huggingface/curriculum_state.pt")
+                        shutil.copy2(curriculum_state_path, target_path)
+                        print(f"Copied curriculum state to {target_path} for HF upload")
+                    except Exception as e:
+                        print(f"Error copying curriculum state: {e}")
             
             # Start merge and upload process
             merge_cmd = [
@@ -1030,7 +1041,20 @@ class RayPPOTrainer(object):
         self.train_dataloader = torch.load(dataloader_local_path)
         if isinstance(self.train_dataloader.dataset, RLHFDataset):
             self.train_dataloader.dataset.resume_dataset_state()
-
+            
+        # load curriculum learning state if available
+        if hasattr(self, 'curriculum_sampler') and self.curriculum_sampler is not None:
+            curriculum_state_path = os.path.join(global_step_folder, 'curriculum_state.pt')
+            if os.path.exists(curriculum_state_path):
+                try:
+                    curriculum_state = torch.load(curriculum_state_path)
+                    self.curriculum_sampler.load_state(curriculum_state)
+                    print(f"Successfully loaded curriculum learning state from {curriculum_state_path}")
+                except Exception as e:
+                    print(f"Failed to load curriculum learning state: {e}")
+            else:
+                print(f"No curriculum learning state found at {curriculum_state_path}")
+            
     def _balance_batch(self, batch: DataProto, metrics, logging_prefix='global_seqlen'):
         """Reorder the data on single controller such that each dp rank gets similar total tokens"""
         attention_mask = batch.batch['attention_mask']
@@ -1211,7 +1235,7 @@ class RayPPOTrainer(object):
                                                   lam=self.config.algorithm.lam,
                                                   num_repeat=self.config.actor_rollout_ref.rollout.n)
 
-                        # Update curriculum weights using batch data (NEW CODE)
+                        # Update curriculum weights using batch data
                         if hasattr(self, 'curriculum_sampler') and self.curriculum_sampler is not None:
                             # Collect rewards and advantages by data source for curriculum learning
                             data_source_rewards = {}

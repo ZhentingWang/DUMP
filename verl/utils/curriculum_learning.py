@@ -409,3 +409,77 @@ class CurriculumSampler:
     def __len__(self):
         """Return the total number of batches."""
         return len(self.dataset)
+        
+    def get_state(self):
+        """
+        Get the current state of the curriculum sampler for checkpointing.
+        
+        Returns:
+            dict: State dictionary containing curriculum controller state
+        """
+        state = {
+            'weights': self._weights,
+            'estimators': {},
+            'weight_history': {}
+        }
+        
+        # Save each estimator's state
+        for source, estimator in self.curriculum_controller.estimators.items():
+            state['estimators'][source] = {
+                'alpha': estimator.alpha,
+                'beta': estimator.beta,
+                'mu': estimator.mu,
+                'n_samples': estimator.n_samples,
+                'total_reward': estimator.total_reward,
+                'recent_rewards': estimator.recent_rewards.copy() if estimator.recent_rewards else [],
+                'recent_advantages': estimator.recent_advantages.copy() if estimator.recent_advantages else []
+            }
+        
+        # Save weight history
+        for source, history in self.curriculum_controller.weight_history.items():
+            state['weight_history'][source] = history.copy() if history else []
+            
+        return state
+        
+    def load_state(self, state):
+        """
+        Load a previously saved state for the curriculum sampler.
+        
+        Args:
+            state (dict): Previously saved state dictionary
+        """
+        # Load weights
+        if 'weights' in state:
+            self._weights = state['weights']
+        
+        # Load estimator states
+        if 'estimators' in state:
+            for source, estimator_state in state['estimators'].items():
+                # Make sure the source exists in the controller
+                if source not in self.curriculum_controller.estimators:
+                    self.curriculum_controller.estimators[source] = LearnabilityEstimator()
+                    
+                # Add source to data_sources if not already present
+                if source not in self.curriculum_controller.data_sources:
+                    self.curriculum_controller.data_sources.append(source)
+                
+                # Update estimator state
+                estimator = self.curriculum_controller.estimators[source]
+                estimator.alpha = estimator_state['alpha']
+                estimator.beta = estimator_state['beta']
+                estimator.mu = estimator_state['mu']
+                estimator.n_samples = estimator_state['n_samples']
+                estimator.total_reward = estimator_state['total_reward']
+                estimator.recent_rewards = estimator_state['recent_rewards']
+                estimator.recent_advantages = estimator_state['recent_advantages']
+        
+        # Load weight history
+        if 'weight_history' in state:
+            for source, history in state['weight_history'].items():
+                # Make sure the source exists in the controller
+                if source not in self.curriculum_controller.weight_history:
+                    self.curriculum_controller.weight_history[source] = []
+                
+                self.curriculum_controller.weight_history[source] = history
+                
+        print(f"Curriculum sampler state loaded: {len(state['estimators'])} sources")
